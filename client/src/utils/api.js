@@ -4,8 +4,14 @@ const defaultApiUrl = import.meta.env.PROD
   ? "https://task-manager-ethara.onrender.com/api"
   : "http://localhost:5002/api";
 
+let baseURL = import.meta.env.VITE_API_URL || defaultApiUrl;
+baseURL = baseURL.replace(/\/+$/, "");
+if (!baseURL.endsWith("/api")) {
+  baseURL += "/api";
+}
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || defaultApiUrl,
+  baseURL,
   withCredentials: true,
 });
 
