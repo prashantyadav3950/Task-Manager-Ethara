@@ -21,7 +21,10 @@ app.use(express.json());
 
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 const allowedOrigins = CLIENT_URL.split(",").map((url) => url.trim());
-const PORT = process.env.PORT || 5002;
+
+// Render injects PORT automatically at runtime.
+// Use the injected port in production, but fall back to 5002 for local dev.
+const PORT = Number(process.env.PORT) || 5002;
 
 app.use(
   cors({
