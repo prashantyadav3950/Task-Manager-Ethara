@@ -50,22 +50,25 @@ Frontend runs on `http://localhost:5173`, backend on `http://localhost:5000`.
 ### Production Build
 
 ```bash
-npm run build   # Builds frontend
-npm start       # Starts server (serves frontend from dist/)
+npm run build   # Builds frontend and installs server dependencies
+npm start       # Starts the backend service
 ```
 
 ## Deployment (Railway)
 
-1. Push code to GitHub
-2. Create a new project on [Railway](https://railway.app)
-3. Add a MongoDB service (or use MongoDB Atlas)
-4. Add your backend service from GitHub
+1. Push code to GitHub.
+2. Create a new project on [Railway](https://railway.app).
+3. Add a MongoDB service or connect to MongoDB Atlas.
+4. Add a new service from GitHub using this repo.
 5. Set environment variables:
    - `MONGODB_URI` - Your MongoDB connection string
    - `JWT_SECRET` - A secure random string
-   - `PORT` - Railway assigns this automatically
-6. Set build command: `cd client && npm install && npm run build && cd ../server && npm install`
-7. Set start command: `cd server && npm start`
+   - `CLIENT_URL` - `https://task-manager-ethara-psi.vercel.app`
+   - `VITE_API_URL` - `https://<your-railway-backend-url>/api` when frontend and backend are separate
+6. Set build command: `npm run build`
+7. Set start command: `npm start`
+
+> If you deploy frontend and backend in the same Railway service, the backend serves the built React app from `client/dist` and the frontend API uses `window.location.origin + '/api'` by default. If you deploy the frontend separately on Vercel, set `VITE_API_URL` in Vercel and `CLIENT_URL` in Railway.
 
 ## API Endpoints
 
