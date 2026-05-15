@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
@@ -34,20 +35,20 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 // Use the injected port in production, but fall back to 5002 for local dev.
 const PORT = Number(process.env.PORT) || 5002;
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    callback(new Error(`CORS policy does not allow access from origin ${origin}`));
+  },
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
 
-      if (allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      callback(new Error(`CORS policy does not allow access from origin ${origin}`));
-    },
-    credentials: true,
-  })
-);
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -62,14 +63,16 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 const clientBuildPath = path.join(__dirname, "../client/dist");
-app.use(express.static(clientBuildPath));
+if (fs.existsSync(clientBuildPath)) {
+  app.use(express.static(clientBuildPath));
 
-app.get("*", (req, res, next) => {
-  if (req.originalUrl.startsWith("/api")) {
-    return next();
-  }
-  res.sendFile(path.join(clientBuildPath, "index.html"));
-});
+  app.get("*", (req, res, next) => {
+    if (req.originalUrl.startsWith("/api")) {
+      return next();
+    }
+    res.sendFile(path.join(clientBuildPath, "index.html"));
+  });
+}
 
 app.use((req, res) => {
   res.status(404).json({
