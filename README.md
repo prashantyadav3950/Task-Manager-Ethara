@@ -54,21 +54,29 @@ npm run build   # Builds frontend and installs server dependencies
 npm start       # Starts the backend service
 ```
 
-## Deployment (Railway)
+## Deployment (Vercel + Render)
 
-1. Push code to GitHub.
-2. Create a new project on [Railway](https://railway.app).
-3. Add a MongoDB service or connect to MongoDB Atlas.
-4. Add a new service from GitHub using this repo.
-5. Set environment variables:
+### Frontend (Vercel)
+1. In Vercel, create a new project using the `client` folder as the root.
+2. Set the build command to `npm install && npm run build`.
+3. Set the output directory to `dist`.
+4. Add environment variables in Vercel:
+   - `VITE_API_URL=https://task-manager-ethara.onrender.com/api`
+5. Deploy.
+
+### Backend (Render)
+1. In Render, create a new Web Service from this repo.
+2. Set the root directory to `server` if you are deploying only the backend service.
+3. Set the build command to `npm run build`.
+4. Set the start command to `npm start`.
+5. Add environment variables in Render:
    - `MONGODB_URI` - Your MongoDB connection string
    - `JWT_SECRET` - A secure random string
-   - `CLIENT_URL` - `https://task-manager-ethara-psi.vercel.app`
-   - `VITE_API_URL` - `https://<your-railway-backend-url>/api` when frontend and backend are separate
-6. Set build command: `npm run build`
-7. Set start command: `npm start`
+   - `CLIENT_URL=https://task-manager-ethara-psi.vercel.app`
+6. Deploy.
 
-> If you deploy frontend and backend in the same Railway service, the backend serves the built React app from `client/dist` and the frontend API uses `window.location.origin + '/api'` by default. If you deploy the frontend separately on Vercel, set `VITE_API_URL` in Vercel and `CLIENT_URL` in Railway.
+> Use `VITE_API_URL` in Vercel so your frontend points to the Render backend.
+> Use `CLIENT_URL` in Render so your backend accepts requests from the Vercel frontend.
 
 ## API Endpoints
 

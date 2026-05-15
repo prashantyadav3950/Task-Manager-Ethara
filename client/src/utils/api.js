@@ -1,7 +1,11 @@
 import axios from "axios";
 
+const defaultApiUrl = import.meta.env.PROD
+  ? "https://task-manager-ethara.onrender.com/api"
+  : "http://localhost:5002/api";
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || `${window.location.origin}/api`,
+  baseURL: import.meta.env.VITE_API_URL || defaultApiUrl,
   withCredentials: true,
 });
 

@@ -19,8 +19,16 @@ const app = express();
 
 app.use(express.json());
 
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
-const allowedOrigins = CLIENT_URL.split(",").map((url) => url.trim());
+const CLIENT_URL = process.env.CLIENT_URL;
+const DEFAULT_ORIGINS = [
+  "http://localhost:5173",
+  "https://task-manager-ethara-psi.vercel.app",
+];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map((url) => url.trim())
+  : CLIENT_URL
+  ? CLIENT_URL.split(",").map((url) => url.trim())
+  : DEFAULT_ORIGINS;
 
 // Render injects PORT automatically at runtime.
 // Use the injected port in production, but fall back to 5002 for local dev.
